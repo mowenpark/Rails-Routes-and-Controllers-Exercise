@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def index
-    render json: "#{User.all}"
+    render json: User.all
   end
 
   def create
@@ -15,8 +15,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    user = User.find(params[:id])
-    if user.update_attributes(user_params)
+    user = User.find_by(id: params[:id])
+    if user.update(user_params)
       render json: user
     else
       render(
@@ -26,17 +26,18 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
-    render json: "#{@user}"
+    @user = User.find_by(id: params[:id]) # find_by will return nil which is parsed into null
+    render json: @user
   end
 
   def destroy
     @user = User.find(params[:id])
     @user.destroy
+    render json: @user
   end
 
   private
   def user_params
-    params.require(:user).permit(:name, :email)
+    params.require(:user).permit(:username)
   end
 end
